@@ -3,7 +3,8 @@ from pyspark.sql import *
 def spark():
     spark = SparkSession\
         .builder\
-        .appName("Instrument info")\
+        .appName("Stock Market ETL")\
+        .enableHiveSupport()\
         .master("local[*]")\
         .getOrCreate()
 
