@@ -3,8 +3,11 @@ import json
 from urllib.parse import quote
 from pyspark.sql import *
 from pyspark.sql.types import *
+from spark_config import
+
+
 # Initiate the spark object
-spark = SparkSession.builder.master("local[*]").appName("Historical Data Caller").getOrCreate()
+spark = spark()
 
 
 # Historical candle data to retreive OHLC (Open, High, Low, Close) about give instrument
