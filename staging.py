@@ -98,5 +98,4 @@ def nifty_top(spark, csv):
     return df
 
 # df_nifty_top_5 = nifty_top(spark,"ind_nifty50list.csv")
-
 # df_nifty_top_5.printSchema()
