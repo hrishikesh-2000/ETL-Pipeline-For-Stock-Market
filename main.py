@@ -110,5 +110,5 @@ def main():
     # spark.sql("select * from global_temp.rsi_14").show()
 
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     main()
