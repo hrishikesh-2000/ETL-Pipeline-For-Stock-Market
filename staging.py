@@ -8,7 +8,6 @@ import json
 
 
 def instrument(spark, csv):
-
     schema = StructType(
         [
             StructField("instrument_key", StringType()),
@@ -27,9 +26,9 @@ def instrument(spark, csv):
         ]
     )
 
-    df = spark.read.format("csv").option("header","True").schema(schema).load(csv)
+    df = spark.read.format("csv").option("header", "True").schema(schema).load(csv)
 
-    df_new = spark.createDataFrame( data = [row for row in df.collect()])
+    df_new = spark.createDataFrame(data=[row for row in df.collect()])
 
     return df_new
 
@@ -38,7 +37,6 @@ def instrument(spark, csv):
 # instrument.printSchema()
 
 def historical_data(spark, params):
-
     instrument_key = params['instrument_key']
     encoded_instrument_key = quote(instrument_key)
     interval = params['interval']
@@ -49,9 +47,9 @@ def historical_data(spark, params):
         'Accept': 'application/json'
     }
 
-    url =  f"https://api.upstox.com/v2/historical-candle/{encoded_instrument_key}/{interval}/{to_date}/{from_date}"
+    url = f"https://api.upstox.com/v2/historical-candle/{encoded_instrument_key}/{interval}/{to_date}/{from_date}"
 
-    response = requests.request("GET", url = url, headers=headers)
+    response = requests.request("GET", url=url, headers=headers)
 
     response = response.json()
 
@@ -86,15 +84,14 @@ def historical_data(spark, params):
 # historical_data.printSchema()
 
 def nifty_top(spark, csv):
-
-    df = spark.read.format("csv").option("header","true").load(csv)
+    df = spark.read.format("csv").option("header", "true").load(csv)
     df = df.withColumnsRenamed(
         {
-            "Company Name":"company_name",
-            "Industry":"industry",
-            "Symbol":"symbol",
-            "Series":"series",
-            "ISIN Code":"ISIN_code"
+            "Company Name": "company_name",
+            "Industry": "industry",
+            "Symbol": "symbol",
+            "Series": "series",
+            "ISIN Code": "ISIN_code"
         }
     )
 
@@ -103,6 +100,3 @@ def nifty_top(spark, csv):
 # df_nifty_top_5 = nifty_top(spark,"ind_nifty50list.csv")
 
 # df_nifty_top_5.printSchema()
-
-
-

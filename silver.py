@@ -5,9 +5,9 @@ from pyspark.sql import Window
 
 spark = spark()
 
-df_instrument = instrument(spark, "NSE.csv")
+df_instrument = instrument(spark, "input/NSE.csv")
 
-df_nifty_top_50 = nifty_top(spark, "ind_nifty50list.csv")
+df_nifty_top_50 = nifty_top(spark, "input/ind_nifty50list.csv")
 df_nifty_top_5 = df_nifty_top_50.limit(5)
 # df_nifty_top_5.printSchema()
 
