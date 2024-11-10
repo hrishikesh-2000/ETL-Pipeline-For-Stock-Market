@@ -76,8 +76,6 @@ def daily_indicator():
     return df_rsi
 
 
-# df = daily_indicator()
-# df.printSchema()
 def main():
 
     # Creating dataframes that can be further called to create views
