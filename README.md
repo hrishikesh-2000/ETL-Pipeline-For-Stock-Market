@@ -32,8 +32,10 @@ The architecture follows a **Medallion** approach with three layers:
 1. **Staging Layer**: 🗂️ Raw data ingestion into data frames.
 2. **Silver Layer**: 🔄 Transformation and data cleaning.
 3. **Gold Layer**: 📊 Aggregated data for final consumption and reporting.
-   
-<img src="images/your-image.png" alt="ETL Pipeline Diagram" width="500"/>
+
+<div align="center">
+<img src="https://github.com/hrishikesh-2000/ETL-Pipeline-For-Stock-Market/blob/Initial_dev/schema/Stock%20Market%20Schema.png" alt="ETL Pipeline Diagram" width="500"/>
+</div>
 
 ## ✨ Features
 
