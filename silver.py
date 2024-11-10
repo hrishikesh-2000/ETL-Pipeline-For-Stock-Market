@@ -92,14 +92,18 @@ def historical_summ():
     df = historical_top_5()
 
     # Define the window to calculate the simple moving average
-    window = Window.partitionBy("company_name").orderBy("timestamp").rowsBetween(-2,Window.currentRow)
+    window_sma = Window.partitionBy("company_name").orderBy("timestamp").rowsBetween(-2,Window.currentRow)
+    window_last_close = Window.partitionBy("company_name").orderBy("timestamp")
+
 
     df_summ = df.withColumn(
         "average_price", round((df.open + df.high + df.low + df.close) / 4, 2)) \
         .withColumn("daily_return", round((df.close - df.open) / df.open * 100, 2)) \
         .withColumn('price_change', round(df.close - df.open, 2)) \
         .withColumn('price_range', round(df.high - df.close, 2))\
-        .withColumn("sma_3", round(avg(df.close).over(window),2))
+        .withColumn("last_close", round(lag("close",1).over(window_last_close),2))\
+        .withColumn("delta_close", round(col("close") - col("last_close"),2))\
+        .withColumn("sma_3", round(avg(df.close).over(window_sma),2))
     return df_summ
 
 
