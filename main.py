@@ -68,7 +68,7 @@ def daily_indicator():
 
     df_rsi = df.withColumn("rsi", round(100 - (100/(1 + (avg(col("upward_change")).over(window_rsi)/avg(col("downward_change")).over(window_rsi)))),2))
 
-
+    df_rsi = df_rsi.drop("instrument_key", "symbol", "open_interest", "last_close","upward_change","downward_change")
     return df_rsi
 
 
