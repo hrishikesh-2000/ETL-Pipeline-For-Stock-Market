@@ -11,9 +11,12 @@ df_nifty_top_50 = nifty_top(spark, "ind_nifty50list.csv")
 df_nifty_top_5 = df_nifty_top_50.limit(5)
 # df_nifty_top_5.printSchema()
 
+# Creating global views out of staging data
+df_instrument.createOrReplaceGlobalTempView("instrument")
+df_nifty_top_5.createOrReplaceGlobalTempView("nifty_5")
+
+
 def transform():
-
-
     # Adding column ISCE_code in df_instrument
     df_instrument_2 = df_instrument.withColumns({
         "ISIN_code": split(df_instrument.instrument_key, "[|]", 2)[1]
@@ -52,6 +55,8 @@ def transform():
     # df_union.toPandas().to_csv("nifty_top_5_history.csv")
 
     return df_union
+
+
 def dataframe_union(dfs):
     if dfs:
         df_first = dfs[0]
@@ -59,6 +64,7 @@ def dataframe_union(dfs):
         df_first = df_first.unionAll(df)
 
     return df_first
+
 
 def historical_top_5():
     df_union = transform()
@@ -86,53 +92,22 @@ def historical_top_5():
     return df_historical_top_5
 
 
-
-
 def historical_summ():
     df = historical_top_5()
 
     # Define the window to calculate the simple moving average
-    window_sma = Window.partitionBy("company_name").orderBy("timestamp").rowsBetween(-2,Window.currentRow)
+    window_sma = Window.partitionBy("company_name").orderBy("timestamp").rowsBetween(-2, Window.currentRow)
     window_last_close = Window.partitionBy("company_name").orderBy("timestamp")
-
 
     df_summ = df.withColumn(
         "average_price", round((df.open + df.high + df.low + df.close) / 4, 2)) \
         .withColumn("daily_return", round((df.close - df.open) / df.open * 100, 2)) \
         .withColumn('price_change', round(df.close - df.open, 2)) \
-        .withColumn('price_range', round(df.high - df.close, 2))\
-        .withColumn("last_close", round(lag("close",1).over(window_last_close),2))\
-        .withColumn("delta_close", round(col("close") - col("last_close"),2))\
-        .withColumn("sma_3", round(avg(df.close).over(window_sma),2))
+        .withColumn('price_range', round(df.high - df.close, 2)) \
+        .withColumn("last_close", round(lag("close", 1).over(window_last_close), 2)) \
+        .withColumn("delta_close", round(col("close") - col("last_close"), 2)) \
+        .withColumn("sma_3", round(avg(df.close).over(window_sma), 2))
     return df_summ
-
 
 # df = historical_summ()
 # df.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

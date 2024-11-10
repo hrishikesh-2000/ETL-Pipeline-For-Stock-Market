@@ -1,12 +1,17 @@
 from silver import historical_summ
+from spark_config import spark
+
+
 from pyspark.sql.functions import *
-from pyspark.sql import Window
+from pyspark.sql import *
 
+import os
 
+spark = spark()
 
 def gold_weekly():
     df_gold = historical_summ()
-    df_gold.printSchema()
+    # df_gold.printSchema()
 
     df = df_gold.withColumn("week_of_year", weekofyear(df_gold.timestamp))
 
@@ -30,7 +35,6 @@ def gold_weekly():
 
 def gold_monthly():
     df_gold = historical_summ()
-    df_gold.printSchema()
 
     df = df_gold.withColumn("month", month(df_gold.timestamp))
 
@@ -72,5 +76,41 @@ def daily_indicator():
     return df_rsi
 
 
-df = daily_indicator()
-df.printSchema()
+# df = daily_indicator()
+# df.printSchema()
+def main():
+
+    # Creating dataframes that can be further called to create views
+    df_historical_summ = historical_summ()
+    weekly_summ = gold_weekly()
+    monthly_summ = gold_monthly()
+    rsi_14 = daily_indicator()
+
+    # Creating SQL views out of silver data
+    df_historical_summ.createOrReplaceGlobalTempView("histoical_summ")
+    weekly_summ.createOrReplaceGlobalTempView("weekly_summ")
+    monthly_summ.createOrReplaceGlobalTempView("monthly_summ")
+    rsi_14.createOrReplaceGlobalTempView("rsi_14")
+
+    # Creating output directory
+    output_dir = "output"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Writing dataframes to csv files
+    df_historical_summ.toPandas().to_csv("output/histoical_summ.csv")
+    weekly_summ.toPandas().to_csv("output/weekly_summ.csv")
+    monthly_summ.toPandas().to_csv("output/monthly_summ.csv")
+    rsi_14.toPandas().to_csv("output/rsi_14.csv")
+
+    # Testing with sql statments
+    # spark.sql("select * from global_temp.instrument").show()
+    # spark.sql("select * from global_temp.nifty_5").show()
+    # spark.sql("select * from global_temp.histoical_summ").show()
+    # spark.sql("select * from global_temp.weekly_summ").show()
+    # spark.sql("select * from global_temp.monthly_summ").show()
+    # spark.sql("select * from global_temp.rsi_14").show()
+
+
+if __name__ = "__main__":
+    main()

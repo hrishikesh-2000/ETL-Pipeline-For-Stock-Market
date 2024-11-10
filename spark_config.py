@@ -1,6 +1,7 @@
 from pyspark.sql import *
 
 def spark():
+
     spark = SparkSession\
         .builder\
         .appName("Stock Market ETL")\

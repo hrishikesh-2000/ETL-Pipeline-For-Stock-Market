@@ -87,7 +87,6 @@ def historical_data(spark, params):
 
 def nifty_top(spark, csv):
 
-
     df = spark.read.format("csv").option("header","true").load(csv)
     df = df.withColumnsRenamed(
         {
