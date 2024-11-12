@@ -48,6 +48,8 @@ The architecture follows a **Medallion** approach with three layers.
 - **Pandas** 🐼 - for data handling
 - **Upstox API** 🔗 - for stock market data
 - **CSV** 📄 - for metadata and static data files
+- **draw.io** - to make architecture diagram
+- **PyCharm** - IDE
 
 ## 📊 Data Sources
 
